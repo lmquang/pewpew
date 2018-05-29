@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func runRequest(req http.Request, client *http.Client) (response *http.Response, stat RequestStat) {
+func runRequest(s StressConfig, req http.Request, client *http.Client) (response *http.Response, stat RequestStat) {
 	reqStartTime := time.Now()
 	response, responseErr := (*client).Do(&req)
 	reqEndTime := time.Now()
@@ -33,6 +33,15 @@ func runRequest(req http.Request, client *http.Client) (response *http.Response,
 	totalSizeReceivedBytes := len(respDump)
 	totalSizeBytes := totalSizeSentBytes + totalSizeReceivedBytes
 
+	var sttCode int
+	timeout, _ := time.ParseDuration(s.Timeout)
+	switch {
+	case timeout.Seconds() < (reqEndTime.Sub(reqStartTime)).Seconds():
+		sttCode = http.StatusRequestTimeout
+	default:
+		sttCode = response.StatusCode
+	}
+
 	stat = RequestStat{
 		Proto:           response.Proto,
 		URL:             req.URL.String(),
@@ -40,7 +49,7 @@ func runRequest(req http.Request, client *http.Client) (response *http.Response,
 		StartTime:       reqStartTime,
 		EndTime:         reqEndTime,
 		Duration:        reqEndTime.Sub(reqStartTime),
-		StatusCode:      response.StatusCode,
+		StatusCode:      sttCode,
 		Error:           responseErr,
 		DataTransferred: totalSizeBytes,
 	}

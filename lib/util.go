@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
 	reggen "github.com/lucasjones/reggen"
 	http2 "golang.org/x/net/http2"
@@ -147,13 +146,13 @@ func createClient(target Target) *http.Client {
 	} else {
 		http2.ConfigureTransport(tr)
 	}
-	var timeout time.Duration
-	if target.Timeout != "" {
-		timeout, _ = time.ParseDuration(target.Timeout)
-	} else {
-		timeout = time.Duration(0)
-	}
-	client := &http.Client{Timeout: timeout, Transport: tr}
+	// var timeout time.Duration
+	// if target.Timeout != "" {
+	// 	timeout, _ = time.ParseDuration(target.Timeout)
+	// } else {
+	// 	timeout = time.Duration(0)
+	// }
+	client := &http.Client{Timeout: 0, Transport: tr}
 	if !target.FollowRedirects {
 		client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse

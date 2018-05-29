@@ -20,9 +20,8 @@ type printer struct {
 }
 
 //CreateTextStressSummary creates a human friendly summary of entire stress test
-func CreateTextStressSummary(reqStatSummary RequestStatSummary) string {
+func CreateTextStressSummary(s StressConfig, reqStatSummary RequestStatSummary) string {
 	summary := "\n"
-
 	summary += "Timing\n"
 	summary += "Mean query speed:     " + fmt.Sprintf("%d", reqStatSummary.avgDuration/1000000) + " ms\n"
 	summary += "Fastest query speed:  " + fmt.Sprintf("%d", reqStatSummary.minDuration/1000000) + " ms\n"
@@ -39,10 +38,8 @@ func CreateTextStressSummary(reqStatSummary RequestStatSummary) string {
 	summary = summary + "\nResponse Codes\n"
 	//sort the status codes
 	var codes []int
-	totalResponses := 0
-	for key, val := range reqStatSummary.statusCodes {
+	for key := range reqStatSummary.statusCodes {
 		codes = append(codes, key)
-		totalResponses += val
 	}
 	sort.Ints(codes)
 	for _, code := range codes {
@@ -57,7 +54,7 @@ func CreateTextStressSummary(reqStatSummary RequestStatSummary) string {
 		} else {
 			summary += " responses"
 		}
-		summary += " (" + fmt.Sprintf("%.2f", 100*float64(reqStatSummary.statusCodes[code])/float64(totalResponses)) + "%)\n"
+		summary += " (" + fmt.Sprintf("%.2f", 100*float64(reqStatSummary.statusCodes[code])/float64(s.Count)) + "%)\n"
 	}
 	return summary
 }

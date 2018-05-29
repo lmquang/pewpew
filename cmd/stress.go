@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	pewpew "github.com/bengadbois/pewpew/lib"
+	pewpew "github.com/lmquang/pewpew/lib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -130,7 +130,7 @@ var stressCmd = &cobra.Command{
 				//info about the request
 				fmt.Printf("----Target %d: %s %s\n", idx+1, target.Method, target.URL)
 				reqStats := pewpew.CreateRequestsStats(targetRequestStats[idx])
-				fmt.Println(pewpew.CreateTextStressSummary(reqStats))
+				fmt.Println(pewpew.CreateTextStressSummary(stressCfg, reqStats))
 			}
 		}
 
@@ -145,7 +145,7 @@ var stressCmd = &cobra.Command{
 			fmt.Println("----Global----")
 		}
 		reqStats := pewpew.CreateRequestsStats(globalStats)
-		fmt.Println(pewpew.CreateTextStressSummary(reqStats))
+		fmt.Println(pewpew.CreateTextStressSummary(stressCfg, reqStats))
 
 		if viper.GetString("output-json") != "" {
 			filename := viper.GetString("output-json")

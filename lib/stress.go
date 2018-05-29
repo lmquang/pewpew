@@ -114,7 +114,7 @@ func RunStress(s StressConfig, w io.Writer) ([][]RequestStat, error) {
 								return
 							}
 
-							response, stat := runRequest(req, client)
+							response, stat := runRequest(s, req, client)
 							if !s.Quiet {
 								p.printStat(stat)
 								if s.Verbose {
