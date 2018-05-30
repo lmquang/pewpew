@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func runRequest(s StressConfig, req http.Request, client *http.Client) (response *http.Response, stat RequestStat) {
+func runRequest(tg Target, req http.Request, client *http.Client) (response *http.Response, stat RequestStat) {
 	reqStartTime := time.Now()
 	response, responseErr := (*client).Do(&req)
 	reqEndTime := time.Now()
@@ -34,7 +34,7 @@ func runRequest(s StressConfig, req http.Request, client *http.Client) (response
 	totalSizeBytes := totalSizeSentBytes + totalSizeReceivedBytes
 
 	var sttCode int
-	timeout, _ := time.ParseDuration(s.Timeout)
+	timeout, _ := time.ParseDuration(tg.Timeout)
 	switch {
 	case timeout.Seconds() < (reqEndTime.Sub(reqStartTime)).Seconds():
 		sttCode = http.StatusRequestTimeout

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -114,14 +115,14 @@ func RunStress(s StressConfig, w io.Writer) ([][]RequestStat, error) {
 								return
 							}
 
-							response, stat := runRequest(s, req, client)
+							response, stat := runRequest(target, req, client)
 							if !s.Quiet {
 								p.printStat(stat)
 								if s.Verbose {
 									p.printVerbose(&req, response)
 								}
 							}
-
+							stat.ResponseBody, _ = ioutil.ReadAll(response.Body)
 							requestStatChan <- stat
 						}
 					}

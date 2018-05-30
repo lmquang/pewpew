@@ -15,9 +15,10 @@ type RequestStat struct {
 	//equivalent to the difference between StartTime and EndTime
 	Duration time.Duration `json:"duration"`
 	//HTTP Status Code, e.g. 200, 404, 503
-	StatusCode      int   `json:"statusCode"`
-	Error           error `json:"error"`
-	DataTransferred int   //bytes
+	StatusCode      int    `json:"statusCode"`
+	Error           error  `json:"error"`
+	DataTransferred int    //bytes
+	ResponseBody    []byte `json:"response_body"`
 }
 
 //RequestStatSummary is an aggregate statistical summary of a set of RequestStats
